@@ -1,0 +1,26 @@
+Parameters:
+  EnvironmentName:
+    Description: An Environment name that will be prefixed to resources
+    Type: String
+
+Resources:
+  CapstoneEKS:
+    Type: AWS::EKS::Cluster
+    Properties:
+      Version: '1.18/17'
+      RoleArn: arn:aws:iam::918750600708:instance-profile/EKSNodeInstanceRole
+      ResourcesVpcConfig:
+        SecurityGroupIds:
+        - Fn::ImportValue:
+            !Sub "${EnvironmentName}-SCG"
+        SubnetIds:
+            Fn::Split:
+                - ","
+                - Fn::ImportValue:
+                      Fn::Sub: ${EnvironmentName}-Subnets
+Outputs:
+  EksId:
+    Description: EKS id.
+    Value: !Ref CapstoneEKS
+    Export: 
+        Name: !Sub ${EnvironmentName}-EKS

@@ -1,0 +1,252 @@
+Parameters:
+
+  EnvironmentName:
+    Description: An environment name that will be prefixed to resource names
+    Type: String
+  
+  VpcCIDR:
+    Description: Please enter IP CIDR Range
+    Type: String
+    Default: 10.129.0.0/16
+
+  Subnet1CIDR:
+    Type: String
+    Default: 10.129.2.0/23
+  
+  Subnet2CIDR:
+    Type: String
+    Default: 10.129.4.0/23
+  
+  Subnet3CIDR:
+    Type: String
+    Default: 10.129.6.0/23
+   
+  SshKey:
+    Description: The EC2 Key Pair to allow SSH access to the instances
+    Type: AWS::EC2::KeyPair::KeyName
+  DesiredInstances:
+    Description: How many instances should be created.
+    Type: Number
+
+Resources: 
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !Ref VpcCIDR
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
+      Tags:
+        - Key: Capstone
+          Value: !Ref EnvironmentName
+
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: !Ref EnvironmentName
+              
+  InternetGatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      InternetGatewayId: !Ref InternetGateway
+      VpcId: !Ref VPC
+  
+  Subnet1: 
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [ 0, !GetAZs '' ]
+      CidrBlock: !Ref Subnet1CIDR
+      MapPublicIpOnLaunch: true
+      Tags: 
+          - Key: Name 
+            Value: !Sub ${EnvironmentName} Subnet1 (AZ1)
+    
+  Subnet2: 
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [ 1, !GetAZs '' ]
+      CidrBlock: !Ref Subnet2CIDR
+      MapPublicIpOnLaunch: true
+      Tags: 
+          - Key: Name 
+            Value: !Sub ${EnvironmentName} Subnet2 (AZ2)
+  
+  Subnet3: 
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [ 3, !GetAZs '' ]
+      CidrBlock: !Ref Subnet3CIDR
+      MapPublicIpOnLaunch: true
+      Tags: 
+          - Key: Name 
+            Value: !Sub ${EnvironmentName} Subnet3 (AZ3)
+
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties: 
+      VpcId: !Ref VPC
+      Tags: 
+          - Key: Name 
+            Value: !Sub ${EnvironmentName} Public Routes
+  
+  DefaultPublicRoute: 
+    Type: AWS::EC2::Route
+    DependsOn: InternetGatewayAttachment
+    Properties: 
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+
+  PublicSubnet1RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref Subnet1
+      RouteTableId: !Ref PublicRouteTable
+      
+  PublicSubnet2RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref Subnet2
+      RouteTableId: !Ref PublicRouteTable
+      
+  PublicSubnet3RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref Subnet3
+      RouteTableId: !Ref PublicRouteTable
+    
+  DefaultSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      VpcId: !Ref VPC
+      GroupDescription: Default security group for EKS.
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+        - IpProtocol: tcp
+          FromPort: 1025
+          ToPort: 65535
+          CidrIp: 0.0.0.0/0
+
+  CapstoneEKS:
+    Type: AWS::EKS::Cluster
+    Properties:
+      Version: '1.15'
+      RoleArn: arn:aws:iam::918750600708:role/EKSNodeInstanceRole
+      ResourcesVpcConfig:
+        SecurityGroupIds:
+        - Fn::ImportValue:
+            !Sub "${EnvironmentName}-SCG"
+        SubnetIds:
+            Fn::Split:
+                - ","
+                - Fn::ImportValue:
+                      Fn::Sub: ${EnvironmentName}-Subnets
+
+  InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: "/"
+      Roles:
+      - !Ref InstanceRole
+  InstanceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - ec2.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: "/"
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
+        - arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
+        - arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
+  NodesAutoScalingGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      DesiredCapacity: !Sub ${DesiredInstances}
+      LaunchConfigurationName: !Ref LaunchConfiguration
+      MinSize: 1
+      MaxSize: 4
+      VPCZoneIdentifier:
+        Fn::Split:
+            - ","
+            - Fn::ImportValue:
+                Fn::Sub: ${EnvironmentName}-Subnets
+      Tags:
+      - Key: Name
+        Value: 
+            !Sub 
+                - "${EksId}-CapstoneNodes-Node"
+                - EksId:
+                    Fn::ImportValue:
+                        !Sub "${EnvironmentName}-EKS"
+        PropagateAtLaunch: 'true'
+      - Key: 
+            !Sub 
+                - "kubernetes.io/cluster/${EksId}"
+                - EksId:
+                    Fn::ImportValue:
+                        !Sub "${EnvironmentName}-EKS"
+        Value: 'owned'
+        PropagateAtLaunch: 'true'
+    UpdatePolicy:
+      AutoScalingRollingUpdate:
+        MaxBatchSize: '1'
+        MinInstancesInService: 3
+  LaunchConfiguration:
+    Type: AWS::AutoScaling::LaunchConfiguration
+    Properties:
+      AssociatePublicIpAddress: 'true'
+      IamInstanceProfile: !Ref InstanceProfile
+      ImageId: ami-0dc7713312a7ec987
+      InstanceType: t2.small
+      KeyName: !Ref SshKey
+      SecurityGroups:
+      - !Ref DefaultSecurityGroup
+      BlockDeviceMappings:
+        - DeviceName: /dev/xvda
+          Ebs:
+            VolumeSize: 8
+            VolumeType: gp2
+
+Outputs: 
+
+  VPC: 
+    Description: A reference to the created VPC
+    Value: !Ref VPC
+    Export:
+      Name: !Sub ${EnvironmentName}-VPCID
+
+  Subnets:
+    Description: The Subnets
+    Value: !Join [ ",", [ !Ref Subnet1, !Ref Subnet2, !Ref Subnet3 ] ]
+    Export: 
+        Name: !Sub ${EnvironmentName}-Subnets
+
+  SecurityGroup:
+    Description: Cluster security group.
+    Value: !Ref DefaultSecurityGroup
+    Export: 
+        Name: !Sub ${EnvironmentName}-SCG
+EksId:
+    Description: EKS id.
+    Value: !Ref CapstoneEKS
+    Export: 
+        Name: !Sub ${EnvironmentName}-EKS
+  
