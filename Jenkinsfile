@@ -10,7 +10,6 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building..'
-                sh "/home/ubuntu/UdacityCapstoneDevOps/run_docker.sh"
             }
         }
         stage('Deploy') {
