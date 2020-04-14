@@ -18,4 +18,6 @@ pipeline {
             sh "kubectl create -f deploy.yml"
             sh "kubectl create -f capservice.yml"            
         }
+     }
+   }
 
