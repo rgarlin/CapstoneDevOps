@@ -15,7 +15,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 echo 'Deploying....'
-                 sh "kubectl create -f capservice.yml --kubeconfig=/home/ubuntu/UdacityCapstoneDevOps/"
+                 sh "kubectl create -f capservice.yml --kubeconfig=/home/ubuntu/UdacityCapstoneDevOps/capservice.yml"
                                                                       
             }
         }
