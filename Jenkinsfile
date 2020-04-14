@@ -7,9 +7,10 @@ pipeline {
                 echo 'Building..'
             }
         }
-        stage('Test') {
+        stage('Build') {
             steps {
-                echo 'Testing..'
+                echo 'Building..'
+                sh "sudo /home/ubuntu/UdacityCapstoneDevOps/run_docker.sh"
             }
         }
         stage('Deploy') {
