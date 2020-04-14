@@ -10,12 +10,14 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building..'
-                sh "cat /home/ubuntu/UdacityCapstoneDevOps/run_docker.sh"
+                sh "/home/ubuntu/UdacityCapstoneDevOps/run_docker.sh"
             }
         }
         stage('Deploy') {
             steps {
                 echo 'Deploying....'
+                 sh "kubectl create -f deploy.yml"
+                 sh "kubectl create -f capservice.yml"
 
             }
         }
