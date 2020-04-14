@@ -5,7 +5,7 @@ pipeline {
         stage('Linting') {
             steps {
                 echo 'Building..'
-                sh  'docker run --rm -i hadolint/hadolint hadolint --ignore DL3007 - <./Dockerfile'
+                sh  'sudo docker run --rm -i hadolint/hadolint hadolint --ignore DL3007 - <./Dockerfile'
             }
         }
         stage('Test') {
