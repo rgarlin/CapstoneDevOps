@@ -13,7 +13,7 @@ pipeline {
             }
         }
         stage('Deploy') {
-            steps {
+            container {
                 echo 'Deploying....'
                  sh "kubectl create -f capservice.yml"
             }                                                                 
