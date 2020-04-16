@@ -1,4 +1,4 @@
-pipeline {
+node {
     agent any
 
     stages {
@@ -13,7 +13,7 @@ pipeline {
             }
         }
         stage('Deploy') {
-            container('kubectl')  {
+            steps('kubectl')  {
                 echo 'Deploying....'
                  sh "kubectl create -f capservice.yml"
             }                                                                 
