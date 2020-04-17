@@ -3,7 +3,6 @@ pipeline {
     environment {
     registry = "rgarlin/flask"
     registryCredential = 'dockerhub'
-    dockerImage = ''
     }
 
     agent any
@@ -16,12 +15,13 @@ pipeline {
             }
         }
         stage('Build') {
-            steps {
-                docker.withegistry("https://registry.hub.docker.com", 'dockerhub')
-                sh "sudo docker push rgarlin:latest" 
-            } 
+            steps { script {
+               docker.withRegistry("", registryCredential) {
+               dockerImage.push() 
+             } 
+           } 
           }    
-        
+        } 
         stage('Deploy') {
             steps('kubectl')  {
                 echo 'Deploying....'
