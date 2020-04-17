@@ -8,7 +8,7 @@ pipeline {
                 sh "sudo /home/ubuntu/UdacityCapstoneDevOps/build_docker.sh" 
             }
         }
-        stage('DockerHub Push') {
+        stage('Build') {
             steps {
                 echo 'Uploading..'
                 script {
@@ -26,4 +26,5 @@ pipeline {
             }                                                                 
         }
     }
+  }
 }
