@@ -15,6 +15,7 @@ pipeline {
                   withCredentials([credentialsId: 'dockerhub', variable: 'dockerhubPW']) {
                      sh "sudo docker login -u rgarlin -p ${dockerhubPW}"
                      sh 'docker push rgarlin/flask:latest)'
+               }  
             }
         }
         stage('Deploy') {
