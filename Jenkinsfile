@@ -3,6 +3,7 @@ pipeline {
     environment {
     registry = "rgarlin/flask"
     registryCredential = 'dockerhub'
+    dockerImage = "flask"
     }
 
     agent any
