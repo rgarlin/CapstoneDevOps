@@ -1,6 +1,13 @@
 pipeline {
-    agent any
+    
+    environment {
+    registry = "rgarlin/flask"
+    registryCredential = 'dockerhub'
+    dockerImage = ''
+    }
 
+    agent any
+    
     stages {
         stage('Linting') {
             steps {
@@ -10,9 +17,9 @@ pipeline {
         }
         stage('Build') {
             steps {
-                echo 'Uploading..'
-                withDockerRegistry([credentialsId: 'dockerhub', url: ""]) {
-                    sh 'docker push rgarlin/flask:latest)'
+              scripts {
+                 docker.withRegistry( '', registryCredential ) {
+                 dockerImage.push()
                }  
            }    
         }
