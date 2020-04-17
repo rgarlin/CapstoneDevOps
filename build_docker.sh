@@ -8,4 +8,4 @@ docker build --tag=flask .
 
 # Step 2:
 # List docker images
-docker image ls
+# docker image ls
