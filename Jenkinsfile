@@ -17,10 +17,8 @@ pipeline {
         }
         stage('Build') {
             steps {
-              script {
-                 docker.withRegistry( '', registryCredential ) {
-                 dockerImage.push()
-               }  
+                sh "docker login"
+                sh "sudo docker push flask:latest" 
             } 
           }    
         }
