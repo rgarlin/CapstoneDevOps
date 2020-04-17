@@ -21,7 +21,7 @@ pipeline {
                 sh "sudo docker push flask:latest" 
             } 
           }    
-        }
+        
         stage('Deploy') {
             steps('kubectl')  {
                 echo 'Deploying....'
@@ -30,6 +30,7 @@ pipeline {
             }                                                                 
         }
    }
+}
 
     
 
