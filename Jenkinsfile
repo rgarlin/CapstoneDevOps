@@ -3,7 +3,6 @@ pipeline {
     environment {
     registry = "rgarlin/flask"
     registryCredential = "dockerhub"
-    dockerImage = "flask:latest"
     }
 
     agent any
@@ -19,7 +18,7 @@ pipeline {
             steps { 
               script {
                  docker.withRegistry("", registryCredential) {
-                    dockerImage.push() 
+                 sh "docker push rgarlin/flask:latest"    
              } 
            } 
           }    
