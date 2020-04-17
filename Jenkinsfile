@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     stages {
-        stage('Building') {
+        stage('Linting') {
             steps {
                 echo 'Building..'
                 sh "sudo /home/ubuntu/UdacityCapstoneDevOps/build_docker.sh" 
