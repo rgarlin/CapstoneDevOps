@@ -5,7 +5,7 @@ pipeline {
         stage('Linting') {
             steps {
                 echo 'Building..'
-                sh "sudo /home/ubuntu/UdacityCapstoneDevOps/run_docker.sh" 
+                sh "sudo /home/ubuntu/UdacityCapstoneDevOps/run_build.sh" 
             }
         }
         stage('Build') {
