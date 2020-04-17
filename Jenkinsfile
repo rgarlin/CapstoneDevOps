@@ -2,15 +2,19 @@ pipeline {
     agent any
 
     stages {
-        stage('Linting') {
+        stage('Building') {
             steps {
                 echo 'Building..'
                 sh "sudo /home/ubuntu/UdacityCapstoneDevOps/build_docker.sh" 
             }
         }
-        stage('Build') {
+        stage('DockerHub Push') {
             steps {
-                echo 'Building..'
+                echo 'Uploading..'
+                script {
+                  withCredentials([credentialsId: 'dockerhub', variable: 'dockerhubPW']) {
+                     sh "sudo docker login -u rgarlin -p ${dockerhubPW}"
+                     sh 'docker push rgarlin/flask:latest)'
             }
         }
         stage('Deploy') {
@@ -21,4 +25,14 @@ pipeline {
             }                                                                 
         }
     }
+}
+
+
+
+steps {
+  script {
+    withDockerRegistry([credentialsId: 'something', url: 'docker.io/my-account']) {
+      sh 'docker push my-account/image:version)'
+    ....
+  }
 }
