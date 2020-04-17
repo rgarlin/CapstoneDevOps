@@ -17,7 +17,7 @@ pipeline {
         }
         stage('Build') {
             steps {
-                docker.withegistry{"https://registry.hub.docker.com", 'dockerhub')
+                docker.withegistry("https://registry.hub.docker.com", 'dockerhub')
                 sh "sudo docker push rgarlin:latest" 
             } 
           }    
