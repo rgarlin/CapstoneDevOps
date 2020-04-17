@@ -11,7 +11,7 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Uploading..'
-                withCredentials([credentialsId: 'dockerhub', variable: 'dockerhubPW']) {
+                withCredentials([string(credentialsId: 'dockerhub', variable: 'dockerhubPW')]) {
                     sh "sudo docker login -u rgarlin -p ${dockerhubPW}"
                     sh 'docker push rgarlin/flask:latest)'
                }  
