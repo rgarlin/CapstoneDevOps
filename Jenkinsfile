@@ -26,13 +26,3 @@ pipeline {
         }
     }
 }
-
-
-
-steps {
-  script {
-    withDockerRegistry([credentialsId: 'something', url: 'docker.io/my-account']) {
-      sh 'docker push my-account/image:version)'
-    ....
-  }
-}
