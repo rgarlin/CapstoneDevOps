@@ -17,8 +17,8 @@ pipeline {
         }
         stage('Build') {
             steps {
-                sh "docker login"
-                sh "sudo docker push flask:latest" 
+                docker.withegistry{"https://registry.hub.docker.com", 'dockerhub')
+                sh "sudo docker push rgarlin:latest" 
             } 
           }    
         
