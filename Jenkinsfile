@@ -26,7 +26,7 @@ pipeline {
         stage('Deploy') {
             steps('kubectl')  {
                 echo 'Deploying....'
-                 withAWS(credentials: 'aws-credentials', region: 'us-east-1') {
+                 withAWS(credentials: 'api_program_user', region: 'us-east-1') {
                      sh "kubectl --kubeconfig=/home/ubuntu/.kube/config create -f deployment.yml"
                      sh "kubectl --kubeconfig=/home/ubuntu/.kube/config create -f capservice.yml"
             }                                                                 
