@@ -31,6 +31,7 @@ pipeline {
                      sh "kubectl --kubeconfig=/home/ubuntu/.kube/config create -f capservice.yml"
             }                                                                 
         }
+     }
    }
 }
 
