@@ -21,7 +21,7 @@ spec:
         app: flask-app
     spec:
       containers:
-      - image: rgarlin/flask:latest
+      - image: rgarlin/flask
         imagePullPolicy: Always
         name: flask-app
         ports:
