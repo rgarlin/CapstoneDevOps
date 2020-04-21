@@ -4,7 +4,7 @@
 
 # Step 1:
 # Build image and add a descriptive tag
-docker build --tag=rgarlin/flask .
+docker build --tag=rgarlin/flask:v2 .
 
 # Step 2:
 # List docker images
