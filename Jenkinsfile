@@ -18,7 +18,7 @@ pipeline {
             steps { 
               script {
                  docker.withRegistry("", registryCredential) {
-                 sh "docker push rgarlin/flask:latest"    
+                 sh "docker push rgarlin/flask:v2"    
              } 
            } 
           }    
