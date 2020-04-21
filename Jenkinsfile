@@ -27,7 +27,7 @@ pipeline {
             steps('kubectl')  {
                 echo 'Deploying....'
                  withAWS(credentials: 'api_program_user', region: 'us-east-1') {
-                     sh "kubectl set image deployments/flask-app:latest" 
+                     sh "kubectl --kubeconfig=/home/ubuntu/.kube/config set image deployments/flask-app:latest" 
                      sh "kubectl --kubeconfig=/home/ubuntu/.kube/config apply -f /home/ubuntu/UdacityCapstoneDevOps/deploy.yml"
                      sh "kubectl --kubeconfig=/home/ubuntu/.kube/config apply -f /home/ubuntu/UdacityCapstoneDevOps/capservice.yml"
             }                                                                 
