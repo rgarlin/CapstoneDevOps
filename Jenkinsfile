@@ -11,13 +11,14 @@ pipeline {
         stage('Linting') {
             steps {
                 echo 'Building..'
-                sh "sudo /home/ubuntu/UdacityCapstoneDevOps/build_docker.sh" 
+                sh "hadolint /home/ubuntu/UdacityCapstoneDevOps/Dockerfile" 
             }
         }
         stage('Build') {
             steps { 
               script {
                  docker.withRegistry("", registryCredential) {
+                 sh "/home/ubuntu/UdacityCapstoneDevOps/build_docker.sh"
                  sh "docker push rgarlin/flask:latest"    
              } 
            } 
