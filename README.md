@@ -19,15 +19,27 @@ which a mentor suggested in the forum.
   <p>build_docker.sh</p>
 </div>
 
-I used the aws eks for the creation of the cluster, but alos have the cloudformation scripts
-eks-template.yml
-worker-node.yml
+<div class="header">
+  <h1>I used the aws eks for the creation of the cluster, but also have the cloudformation scripts</h1>
+  <p>eks-template.yml</p>
+  <p>worker-node.yml</p>
+</div>
 
-Kubernetes Files
-deploy.yml 
-capservice.yml
+<div class="header">
+  <h1>Kubernetes Files</h1>
+  <p>deploy.yml</p>
+  <p>capservice.yml</p>
+</div>
 
+<div class="header">
+  <h1>Jenkins File</h1>
+  <p>JenkinsFile</p>
+</div>
 
+<div class="header">
+  <h1>AWS LB URL</h1>
+  <p>http://ada469eda821b402493d2f0988e1f0dd-1238219245.us-east-1.elb.amazonaws.com/</p>
+</div>
 
 
 
