@@ -7,7 +7,7 @@ from Docker Hub. Since it's a rolling update the EC2 instances did not
 change on my AWS EC2 page. I have a print screen of "kubectl describe deployments", 
 which a mentor suggested in the forum. 
 
-Flask Application File 
+<p>Flask Application File<p> 
 main.py
 
 Docker File
