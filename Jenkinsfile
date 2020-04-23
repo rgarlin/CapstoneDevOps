@@ -29,6 +29,7 @@ pipeline {
             steps('kubectl')  {
                 echo 'Deploying....'
                  withAWS(credentials: 'api_program_user', region: 'us-east-1') {
+                   sh "aws eks --region us-east-1 update-kubeconfig --name UdacityDevCap"
                    script{
                        try{
                            sh "kubectl --kubeconfig=/home/ubuntu/.kube/config apply -f /home/ubuntu/UdacityCapstoneDevOps/capservice.yml"
