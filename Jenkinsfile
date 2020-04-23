@@ -10,13 +10,14 @@ pipeline {
     stages {
         stage('Linting') {
             steps {
-                echo 'Building..'
+                echo 'Linting..'
                 sh "hadolint /home/ubuntu/UdacityCapstoneDevOps/Dockerfile" 
             }
         }
         stage('Build') {
             steps { 
               script {
+                 echo 'Building'
                  docker.withRegistry("", registryCredential) {
                  sh "/home/ubuntu/UdacityCapstoneDevOps/build_docker.sh"
                  sh "docker push rgarlin/flask:latest"    
@@ -28,7 +29,13 @@ pipeline {
             steps('kubectl')  {
                 echo 'Deploying....'
                  withAWS(credentials: 'api_program_user', region: 'us-east-1') {
-                     sh "kubectl --kubeconfig=/home/ubuntu/.kube/config apply -f /home/ubuntu/UdacityCapstoneDevOps/capservice.yml"
+                   script{
+                       try{
+                           sh "kubectl --kubeconfig=/home/ubuntu/.kube/config apply -f /home/ubuntu/UdacityCapstoneDevOps/capservice.yml"
+                       }catch(error){
+                           sh "kubectl --kubeconfig=/home/ubuntu/.kube/config create -f /home/ubuntu/UdacityCapstoneDevOps/capservice.yml"
+                       }
+                   }
             }                                                                 
         }
      }
