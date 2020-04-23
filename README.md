@@ -9,17 +9,15 @@ which a mentor suggested in the forum.
 
 
 <div class="header">
-  <h1>Header</h1>
-  <p>Flask Application File</p>
+  <h1>Flask Application File</h1>
+  <p>main.py</p>
 </div>
-main.py
 
 <div class="header">
-  <h1>Header</h1>
-  <p>Docker Files</p>
+  <h1>Docker Files</h1>
+  <p>Dockerfile</p>
+  <p>build_docker.sh</p>
 </div>
-Dockerfile
-build_docker.sh
 
 I used the aws eks for the creation of the cluster, but alos have the cloudformation scripts
 eks-template.yml
