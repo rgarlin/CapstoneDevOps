@@ -20,7 +20,8 @@ which a mentor suggested in the forum.
 </div>
 
 <div class="header">
-  <h1>I used the aws eks for the creation of the cluster, but also have the cloudformation scripts</h1>
+  <h1>cloudformation scripts</h1>
+  <p> I used the aws eks for the creation of the cluster, but also have the cloudformation scripts</p>
   <p>eks-template.yml</p>
   <p>worker-node.yml</p>
 </div>
